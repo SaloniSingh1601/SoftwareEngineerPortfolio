@@ -28,8 +28,8 @@ export const portfolioData: PortfolioData = {
     { value: '1,200+', label: 'Clients migrated' },
   ],
   contact: {
-    email: 'salonisingh200611@gmail.com',
-    phone: '+91 98348 24861',
+    email: 'salonisingh11@gmail.com',
+    phone: '+91 98348 11111',
     linkedin: 'https://www.linkedin.com/in/saloni-singh-b9b4941a4/',
     github: 'https://github.com/SaloniSingh1601',
     portfolio: 'salonisingh.vercel.app',

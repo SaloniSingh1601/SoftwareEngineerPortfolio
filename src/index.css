@@ -1,14 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy: #0A192F;
-  --color-navy-light: #112240;
-  --color-soft-white: #F8F9FA;
-  --color-gold: #C5A880;
-  --color-gold-light: #E0D0B0;
-  --color-grey: #8892B0;
-  --color-glass-border: rgba(197, 168, 128, 0.15);
-  --color-glass-bg: rgba(17, 34, 64, 0.85);
+  --color-cream: #FAF7F0;
+  --color-cream-dark: #F5F0E6;
+  --color-cream-light: #FDFCF8;
+  --color-green: #2D5A3D;
+  --color-green-light: #3D7A52;
+  --color-green-dark: #1F3D2A;
+  --color-sage: #8FA89B;
+  --color-charcoal: #1A1A1A;
+  --color-gray: #6B7280;
+  --color-gray-light: #9CA3AF;
 
   --font-heading: "Inter", system-ui, -apple-system, sans-serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
@@ -16,7 +18,7 @@
 
 @layer base {
   * {
-    @apply border-gold/10;
+    @apply border-green/10;
   }
   
   html {
@@ -24,78 +26,53 @@
   }
 
   body {
-    @apply bg-navy text-soft-white font-body min-h-screen;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    @apply bg-cream text-charcoal font-body min-h-screen antialiased;
     margin: 0;
     padding: 0;
   }
 
   ::selection {
-    @apply bg-gold/30 text-soft-white;
+    @apply bg-green/20 text-charcoal;
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply backdrop-blur-xl bg-glass-bg border border-glass-border shadow-2xl;
+  .card {
+    @apply bg-white/80 backdrop-blur-sm border border-green/10 rounded-xl shadow-sm;
   }
 
-  .glass-card {
-    @apply bg-navy-light/50 backdrop-blur-lg border border-gold/10 rounded-2xl;
+  .card-hover {
+    @apply hover:shadow-md hover:border-green/20 transition-all duration-300;
   }
 
-  .text-glow {
-    text-shadow: 0 0 20px rgba(197, 168, 128, 0.4), 0 0 40px rgba(197, 168, 128, 0.2);
-  }
-
-  .gold-gradient {
-    background: linear-gradient(135deg, #C5A880 0%, #E0D0B0 50%, #C5A880 100%);
+  .text-gradient {
+    background: linear-gradient(135deg, #2D5A3D 0%, #3D7A52 50%, #2D5A3D 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .gold-gradient-bg {
-    background: linear-gradient(135deg, #C5A880 0%, #E0D0B0 100%);
-  }
-
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  .animate-pulse-slow {
-    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
+  .bg-gradient-green {
+    background: linear-gradient(135deg, #2D5A3D 0%, #3D7A52 100%);
   }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-navy;
+  @apply bg-cream-dark;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gold/20 rounded-full;
-  border: 2px solid transparent;
-  background-clip: content-box;
+  @apply bg-green/20 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gold/40;
+  @apply bg-green/40;
 }
 
 #root {
