@@ -1,84 +1,109 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import type { LucideIcon } from 'lucide-react';
-import { Layout, Database, Cloud, Wrench, Cpu } from 'lucide-react';
+import { Code2 } from 'lucide-react';
 import { portfolioData } from '../../data/portfolioData';
-
-const skillIconMap: Record<string, LucideIcon> = {
-  'Programming Languages': Cpu,
-  'Frameworks & Libraries': Layout,
-  'Cloud & Infrastructure': Cloud,
-  'Tools & Methodologies': Wrench,
-  'Databases': Database,
-};
-
-const skillLevelMap: Record<string, string> = {
-  'Programming Languages': 'Mastery',
-  'Frameworks & Libraries': 'Expert',
-  'Cloud & Infrastructure': 'Advanced',
-  'Tools & Methodologies': 'Advanced',
-};
 
 export const Skills: React.FC = () => {
   return (
-    <section id="skills" className="py-24 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+    <section id="skills" className="py-24 relative bg-cream-dark overflow-hidden">
+      {/* Background decoration */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 0.5 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1 }}
+        className="absolute top-0 left-0 w-[400px] h-[400px] bg-green/5 rounded-full blur-[100px] pointer-events-none"
+      />
+
+      <div className="max-w-4xl mx-auto px-6 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex items-center gap-4 mb-16"
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="mb-12"
         >
-          <div className="w-12 h-12 rounded-2xl bg-gold/10 flex items-center justify-center border border-gold/20 shadow-[0_0_15px_rgba(197,168,128,0.2)]">
-            <Layout className="w-6 h-6 text-gold" />
-          </div>
-          <div>
-            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">Tech Tree: Skills</h2>
-            <p className="text-grey font-bold tracking-widest text-xs mt-1 uppercase">Field Capability Assessment</p>
-          </div>
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="flex items-center gap-3 mb-4"
+          >
+            <motion.div
+              initial={{ rotate: -180, opacity: 0 }}
+              whileInView={{ rotate: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Code2 className="w-6 h-6 text-green" />
+            </motion.div>
+            <h2 className="text-3xl md:text-4xl font-bold text-charcoal">Skills</h2>
+          </motion.div>
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: 64 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="h-1 bg-green rounded-full"
+          />
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {portfolioData.skills.map((skillGroup, index) => {
-            const Icon = skillIconMap[skillGroup.category] || Cpu;
-            const level = skillLevelMap[skillGroup.category] || 'Advanced';
-            
-            return (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {portfolioData.skills.map((skillGroup, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ 
+                delay: index * 0.15, 
+                duration: 0.5,
+                type: "spring",
+                stiffness: 100
+              }}
+            >
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="glass p-8 rounded-[2rem] flex flex-col h-full relative group transition-all duration-300 hover:shadow-[0_15px_30px_rgba(197,168,128,0.1)]"
+                whileHover={{ 
+                  y: -8, 
+                  boxShadow: "0 20px 40px rgba(45, 90, 61, 0.1)",
+                  transition: { duration: 0.3 }
+                }}
+                className="card p-6 card-hover h-full group"
               >
-                <div className="flex items-center justify-between mb-8">
-                  <div className="w-14 h-14 rounded-2xl bg-navy/60 flex items-center justify-center border border-gold/10 group-hover:bg-gold/10 group-hover:border-gold/30 transition-all duration-300">
-                    <Icon className="w-7 h-7 text-gold group-hover:scale-110 transition-transform" />
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] text-gold font-black uppercase tracking-widest block opacity-60 group-hover:opacity-100 transition-opacity">Level</span>
-                    <span className="text-sm font-black text-gold uppercase tracking-tighter leading-none">{level}</span>
-                  </div>
-                </div>
-
-                <h3 className="text-xl font-black mb-6 tracking-tight group-hover:text-gold transition-colors">{skillGroup.category}</h3>
+                <motion.h3 
+                  className="text-sm font-semibold text-charcoal mb-4 uppercase tracking-wide group-hover:text-green transition-colors"
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.15 + 0.2 }}
+                >
+                  {skillGroup.category}
+                </motion.h3>
                 
-                <div className="flex flex-wrap gap-2 mt-auto">
+                <div className="flex flex-wrap gap-2">
                   {skillGroup.skills.map((skill, i) => (
                     <motion.span
                       key={i}
-                      whileHover={{ scale: 1.05 }}
-                      className="text-[11px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl bg-navy/80 border border-gold/10 text-soft-white group-hover:border-gold/40 group-hover:text-gold transition-all"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.15 + 0.3 + i * 0.03 }}
+                      whileHover={{ 
+                        scale: 1.08,
+                        backgroundColor: "rgba(45, 90, 61, 0.1)",
+                        borderColor: "rgba(45, 90, 61, 0.3)",
+                        transition: { duration: 0.2 }
+                      }}
+                      className="text-sm px-3 py-1.5 bg-cream border border-green/10 rounded-lg text-charcoal cursor-default transition-colors"
                     >
                       {skill}
                     </motion.span>
                   ))}
                 </div>
               </motion.div>
-            );
-          })}
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

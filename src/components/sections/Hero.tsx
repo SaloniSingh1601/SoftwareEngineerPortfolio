@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Target, Rocket, Sparkles, ChevronDown, Gamepad2 } from 'lucide-react';
+import { ArrowDown, ArrowRight } from 'lucide-react';
 import { portfolioData } from '../../data/portfolioData';
-import { useGame } from '../../contexts/GameContext';
+import { useTypewriter } from '../../hooks/useTypewriter';
+import { useCountUp } from '../../hooks/useCountUp';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -17,120 +18,338 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { y: 30, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const } },
+  visible: { 
+    y: 0, 
+    opacity: 1, 
+    transition: { 
+      duration: 0.8, 
+      ease: [0.22, 1, 0.36, 1] as const
+    } 
+  },
 };
 
-interface HeroProps {
-  onOpenGame: () => void;
-}
+// Counter component with animation
+const AnimatedCounter = ({ value, suffix = '', prefix = '' }: { value: string; suffix?: string; prefix?: string }) => {
+  const numericValue = parseInt(value.replace(/[^0-9]/g, ''));
+  const { ref, formattedCount } = useCountUp({
+    end: numericValue,
+    duration: 2500,
+    suffix,
+    prefix,
+  });
 
-export const Hero: React.FC<HeroProps> = ({ onOpenGame }) => {
-  const { xp } = useGame();
+  return <span ref={ref}>{formattedCount}</span>;
+};
+
+// Animated gradient text
+const GradientName = ({ children, delay = 0 }: { children: string; delay?: number }) => {
+  return (
+    <motion.span
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay }}
+      className="relative inline-block"
+    >
+      <span className="bg-gradient-to-r from-green via-green-light to-green bg-clip-text text-transparent">
+        {children}
+      </span>
+      <motion.span
+        className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-green to-green-light rounded-full"
+        initial={{ width: 0 }}
+        animate={{ width: "100%" }}
+        transition={{ duration: 0.8, delay: delay + 0.5 }}
+      />
+    </motion.span>
+  );
+};
+
+// Floating animation wrapper
+const FloatingElement = ({ children, delay = 0, duration = 4 }: { children: React.ReactNode; delay?: number; duration?: number }) => {
+  return (
+    <motion.div
+      animate={{
+        y: [0, -10, 0],
+      }}
+      transition={{
+        duration,
+        repeat: Infinity,
+        ease: "easeInOut",
+        delay,
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// Rotating badge
+const RotatingBadge = () => {
+  return (
+    <motion.div
+      className="absolute -right-4 -top-4 w-20 h-20"
+      animate={{ rotate: 360 }}
+      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+    >
+      <svg viewBox="0 0 100 100" className="w-full h-full">
+        <defs>
+          <path
+            id="circlePath"
+            d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
+          />
+        </defs>
+        <text className="text-[8px] fill-green font-medium">
+          <textPath href="#circlePath">
+            • OPEN TO WORK • AVAILABLE NOW • 
+          </textPath>
+        </text>
+      </svg>
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center"
+        whileHover={{ scale: 1.1 }}
+      >
+        <div className="w-10 h-10 bg-green rounded-full flex items-center justify-center shadow-lg">
+          <span className="text-white text-lg">✦</span>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// Glowing profile placeholder
+const ProfilePlaceholder = () => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+      animate={{ opacity: 1, scale: 1, rotate: 0 }}
+      transition={{ duration: 0.8, delay: 0.3, type: "spring" }}
+      className="relative mx-auto mb-8"
+    >
+      {/* Outer glow rings */}
+      <motion.div
+        className="absolute -inset-4 rounded-full bg-gradient-to-r from-green/20 to-green-light/20 blur-xl"
+        animate={{
+          scale: [1, 1.1, 1],
+          opacity: [0.5, 0.8, 0.5],
+        }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="absolute -inset-8 rounded-full bg-gradient-to-r from-green/10 to-green-light/10 blur-2xl"
+        animate={{
+          scale: [1, 1.15, 1],
+          opacity: [0.3, 0.6, 0.3],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 0.5,
+        }}
+      />
+
+      {/* Main avatar circle */}
+      <motion.div
+        className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white shadow-2xl mx-auto"
+        whileHover={{ scale: 1.05, rotate: 3 }}
+        transition={{ duration: 0.3 }}
+      >
+        {/* Gradient background as placeholder */}
+        <div className="w-full h-full bg-gradient-to-br from-green via-green-light to-green-dark flex items-center justify-center">
+          <motion.span
+            className="text-5xl md:text-6xl font-bold text-white"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+          >
+            SS
+          </motion.span>
+        </div>
+        
+        {/* Shine effect */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
+          animate={{
+            x: [-200, 200],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            repeatDelay: 2,
+            ease: "easeInOut",
+          }}
+        />
+      </motion.div>
+
+      {/* Rotating badge */}
+      <RotatingBadge />
+    </motion.div>
+  );
+};
+
+export const Hero: React.FC = () => {
+  const { displayText, isTyping } = useTypewriter({
+    text: portfolioData.tagline,
+    speed: 40,
+    delay: 800,
+  });
 
   return (
     <section id="hero" className="min-h-screen flex items-center justify-center pt-20 pb-16 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-gold/10 rounded-full blur-[120px] animate-pulse-slow" />
-        <div className="absolute bottom-1/4 -right-1/4 w-[500px] h-[500px] bg-gold/8 rounded-full blur-[100px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold/5 rounded-full blur-[150px]" />
+      {/* Animated background blobs */}
+      <div className="absolute inset-0 pointer-events-none">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.1, 0.15, 0.1],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-green/20 rounded-full blur-[120px]"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.3, 1],
+            opacity: [0.08, 0.12, 0.08],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+          className="absolute bottom-1/4 -right-1/4 w-[500px] h-[500px] bg-green/20 rounded-full blur-[100px]"
+        />
       </div>
-
-      {/* Grid Pattern Overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(197,168,128,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(197,168,128,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
 
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="max-w-5xl mx-auto px-6 text-center z-10"
+        className="max-w-4xl mx-auto px-6 text-center relative z-10"
       >
-        <motion.div variants={itemVariants} className="inline-flex items-center gap-3 glass px-6 py-3 rounded-full mb-8 border-gold/20">
-          <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold/60 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-gold"></span>
-          </span>
-          <span className="text-xs font-bold tracking-[0.25em] text-gold uppercase">System Online: Operational</span>
-          <Sparkles className="w-4 h-4 text-gold" />
+        {/* Profile Picture with animated frame */}
+        <ProfilePlaceholder />
+
+        <motion.div variants={itemVariants} className="mb-6">
+          <motion.span 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="inline-block px-4 py-2 bg-green/10 text-green text-sm font-medium rounded-full"
+          >
+            Software Engineer at Rippling
+          </motion.span>
         </motion.div>
 
-        <motion.h1 variants={itemVariants} className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-6 leading-[0.85]">
-          <span className="bg-gradient-to-b from-soft-white to-grey bg-clip-text text-transparent">{portfolioData.name.split(' ')[0]}</span>
-          <br />
-          <span className="gold-gradient text-glow">{portfolioData.name.split(' ')[1]}</span>
+        <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight text-charcoal">
+          <motion.span
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            {portfolioData.name.split(' ')[0]}
+          </motion.span>
+          {' '}
+          <GradientName delay={0.6}>
+            {portfolioData.name.split(' ')[1]}
+          </GradientName>
         </motion.h1>
 
-        <motion.h2 variants={itemVariants} className="text-xl md:text-3xl lg:text-4xl font-bold gold-gradient tracking-tight mb-6 flex items-center justify-center gap-3">
-          <Shield className="w-6 h-6 text-gold" />
-          {portfolioData.title}
-        </motion.h2>
-
-        <motion.p variants={itemVariants} className="text-lg md:text-xl text-grey max-w-3xl mx-auto mb-12 leading-relaxed">
-          {portfolioData.tagline}
+        <motion.p variants={itemVariants} className="text-xl md:text-2xl text-gray max-w-2xl mx-auto mb-10 leading-relaxed min-h-[4rem]">
+          {displayText}
+          {isTyping && (
+            <span className="inline-block w-0.5 h-6 bg-green ml-1 animate-pulse" />
+          )}
         </motion.p>
 
-        <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center gap-6 mb-16">
-          <motion.a
-            href="#experience"
-            whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(197,168,128,0.5)' }}
-            whileTap={{ scale: 0.95 }}
-            className="group px-10 py-5 gold-gradient-bg text-navy font-black text-sm tracking-wider rounded-2xl flex items-center gap-3 shadow-[0_0_30px_rgba(197,168,128,0.4)] hover:shadow-[0_0_50px_rgba(197,168,128,0.6)] transition-all"
-          >
-            <Rocket className="w-5 h-5 group-hover:rotate-45 transition-transform" />
-            LAUNCH MISSION
-          </motion.a>
-
-          <motion.a
-            href="#projects"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-10 py-5 glass text-gold font-black text-sm tracking-wider rounded-2xl flex items-center gap-3 border-gold/30 hover:bg-gold/10 transition-all"
-          >
-            <Target className="w-5 h-5" />
-            VIEW MISSIONS
-          </motion.a>
-
-          <motion.button
-            type="button"
-            onClick={onOpenGame}
-            whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(197,168,128,0.4)' }}
-            whileTap={{ scale: 0.95 }}
-            className="px-10 py-5 glass text-gold font-black text-sm tracking-wider rounded-2xl flex items-center gap-3 border-gold/30 hover:bg-gold/10 transition-all relative overflow-hidden"
-          >
-            <Gamepad2 className="w-5 h-5" />
-            Play: Resume Rush
-            {xp > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[1.5rem] h-6 px-1 bg-gold text-navy text-[10px] font-black rounded-full flex items-center justify-center">
-                {xp >= 1000 ? '1k+' : xp}
-              </span>
-            )}
-          </motion.button>
+        <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center gap-4 mb-16">
+          <FloatingElement delay={0} duration={3}>
+            <motion.a
+              href="#experience"
+              whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(45, 90, 61, 0.3)' }}
+              whileTap={{ scale: 0.95 }}
+              className="group inline-flex items-center gap-2 px-8 py-4 bg-green text-white font-medium rounded-xl transition-all"
+            >
+              View Experience
+              <motion.span
+                animate={{ x: [0, 4, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <ArrowRight className="w-4 h-4" />
+              </motion.span>
+            </motion.a>
+          </FloatingElement>
+          <FloatingElement delay={0.5} duration={3.5}>
+            <motion.a
+              href="#projects"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center gap-2 px-8 py-4 border border-green/20 text-green font-medium rounded-xl hover:bg-green/5 transition-colors"
+            >
+              View Projects
+            </motion.a>
+          </FloatingElement>
         </motion.div>
 
-        <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center gap-8 text-sm font-bold">
-          {portfolioData.heroHighlights.map((h) => (
-            <div key={h.label} className="glass px-6 py-4 rounded-2xl border-gold/20 flex items-center gap-3 max-w-[220px]">
-              <Shield className="w-5 h-5 text-gold shrink-0" />
-              <div className="text-left min-w-0">
-                <span className="text-2xl font-black text-gold block leading-tight">{h.value}</span>
-                <span className="text-[10px] text-grey uppercase tracking-widest leading-snug">{h.label}</span>
-              </div>
-            </div>
+        <motion.div 
+          variants={itemVariants} 
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto"
+        >
+          {portfolioData.heroHighlights.map((highlight, index) => (
+            <motion.div 
+              key={highlight.label} 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.8 + index * 0.1 }}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              className="card p-6 text-center card-hover group relative overflow-hidden"
+            >
+              {/* Glow on hover */}
+              <div className="absolute inset-0 bg-gradient-to-r from-green/0 to-green/0 group-hover:from-green/10 group-hover:to-green/5 transition-all duration-500" />
+              
+              <p className="text-3xl font-bold text-green mb-1 group-hover:scale-110 transition-transform relative z-10">
+                {highlight.value.includes('%') ? (
+                  <>
+                    <AnimatedCounter value={highlight.value} suffix="%" />
+                  </>
+                ) : highlight.value.includes('+') ? (
+                  <>
+                    <AnimatedCounter value={highlight.value} suffix="+" />
+                  </>
+                ) : (
+                  highlight.value
+                )}
+              </p>
+              <p className="text-xs text-gray relative z-10">{highlight.label}</p>
+            </motion.div>
           ))}
         </motion.div>
-
-        <motion.div
-          variants={itemVariants}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-grey/60"
+      </motion.div>
+      
+      {/* Scroll to explore - positioned relative to section, not content */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+      >
+        <motion.a 
+          href="#about" 
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="flex flex-col items-center gap-2 text-gray hover:text-green transition-colors bg-cream/80 backdrop-blur-sm px-4 py-2 rounded-full"
         >
-          <span className="text-[10px] uppercase tracking-widest">Scroll to explore</span>
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            <ChevronDown className="w-6 h-6" />
-          </motion.div>
-        </motion.div>
+          <span className="text-xs">Scroll to explore</span>
+          <ArrowDown className="w-4 h-4" />
+        </motion.a>
       </motion.div>
     </section>
   );
